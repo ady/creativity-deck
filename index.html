@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creativity Deck</title>
+<style>
+  :root {
+    --bg: #15151a;
+    --card-bg: #1f1f27;
+    --text: #f2f2f2;
+    --muted: #a6a6b3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    padding: 24px;
+  }
+  h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 28px;
+  }
+  .card {
+    width: min(420px, 90vw);
+    min-height: 320px;
+    border-radius: 20px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--card-bg);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.15s ease;
+  }
+  .card.dealing {
+    transform: scale(0.96) rotate(-1deg);
+  }
+  .suit-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .suit-number {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .card-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin: 28px 0 16px;
+    line-height: 1.2;
+  }
+  .card-desc {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: #d8d8df;
+  }
+  button {
+    margin-top: 32px;
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    border: none;
+    border-radius: 999px;
+    background: #f2f2f2;
+    color: #15151a;
+    cursor: pointer;
+    transition: transform 0.08s ease, opacity 0.15s ease;
+  }
+  button:hover { opacity: 0.85; }
+  button:active { transform: scale(0.96); }
+  .footer {
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <h1>Creativity Card Deck</h1>
+  <div class="card" id="card">
+    <div class="suit-label">
+      <span id="suit" style="color:#888"></span>
+      <span class="suit-number" id="number"></span>
+    </div>
+    <div class="card-title" id="title">Tap Draw to begin</div>
+    <div class="card-desc" id="desc">Pull a random prompt from the deck.</div>
+  </div>
+  <button id="draw">Draw a Card</button>
+  <div class="footer" id="counter"></div>
+
+<script>
+const CARDS = [{"suit": "Methods & Mechanisms", "number": 1, "title": "Roll the Dice", "description": "Let chance decide a starting point (word, topic, tone). Randomness removes pressure and creates momentum."}, {"suit": "Methods & Mechanisms", "number": 2, "title": "Acrostic Skeleton", "description": "Choose a word and let its letters dictate your opening lines. Constraints give you something firm to push against."}, {"suit": "Methods & Mechanisms", "number": 3, "title": "Time-Box It", "description": "Set a timer for 90 seconds. Write without stopping. Speed silences the inner critic."}, {"suit": "Methods & Mechanisms", "number": 4, "title": "Take One Away", "description": "Remove a word, sentence, or idea. Subtraction clarifies intention faster than addition."}, {"suit": "Methods & Mechanisms", "number": 5, "title": "Wordpool First", "description": "Generate a messy cluster of words before shaping anything. Raw material beats a blank page every time."}, {"suit": "Methods & Mechanisms", "number": 6, "title": "Use the Nearest Object", "description": "Pick something within arm\u2019s reach and use it as your anchor metaphor. It forces specificity and breaks abstraction."}, {"suit": "Methods & Mechanisms", "number": 7, "title": "Switch the Medium", "description": "Draw instead of writing; speak instead of typing. A different channel unlocks different thinking."}, {"suit": "Methods & Mechanisms", "number": 8, "title": "One Variable at a Time", "description": "Don\u2019t fix everything at once. Change one element - tone, tense, setting - and see what shifts."}, {"suit": "Methods & Mechanisms", "number": 9, "title": "Found Words", "description": "Gather words from whatever\u2019s around you - leaflet, label, headline, conversation. Found language injects surprise."}, {"suit": "Methods & Mechanisms", "number": 10, "title": "Choose a Forbidden Word", "description": "Pick a word you must not use. Let that absence shape your creativity in surprising ways."}, {"suit": "Methods & Mechanisms", "number": 11, "title": "Template Theft", "description": "Borrow a structure (list, recipe, manifesto). A ready-made shell frees energy for content."}, {"suit": "Methods & Mechanisms", "number": 12, "title": "Opposites Engine", "description": "Generate opposites for key words. Your brain finds the strong middle ground."}, {"suit": "Methods & Mechanisms", "number": 13, "title": "Zoom Vocabulary", "description": "Describe the subject in 5 words, then 50, then 5. Compression and expansion sharpen clarity."}, {"suit": "Seeing Differently", "number": 1, "title": "Zoom In / Zoom Out", "description": "Write one version in microscopic detail, another from far above. Insight lives in the difference."}, {"suit": "Seeing Differently", "number": 2, "title": "Flip the Frame", "description": "State the opposite interpretation. Even if wrong, it widens possibility."}, {"suit": "Seeing Differently", "number": 3, "title": "Change the Scale", "description": "Make your idea tiny or gigantic. Scale changes meaning instantly."}, {"suit": "Seeing Differently", "number": 4, "title": "Tell It from the Edge", "description": "Choose someone who isn\u2019t the protagonist and let them narrate."}, {"suit": "Seeing Differently", "number": 5, "title": "Translate the Feeling", "description": "Express the idea as sound, colour, gesture, or temperature."}, {"suit": "Seeing Differently", "number": 6, "title": "Make It Literal", "description": "Take a metaphor you use and pretend it\u2019s real. Literalising abstractions reveals new angles."}, {"suit": "Seeing Differently", "number": 7, "title": "Rewrite in a Different Tense", "description": "Past, present, future each tell different emotional truths."}, {"suit": "Seeing Differently", "number": 8, "title": "Ask: What else could this be?", "description": "Push your concept into another category (tool, journey, weather system)."}, {"suit": "Seeing Differently", "number": 9, "title": "Give It a Job Title", "description": "If your idea were employed, what would it do? Job roles expose function."}, {"suit": "Seeing Differently", "number": 10, "title": "Rotate the Emotion", "description": "Try expressing the idea through curiosity, anger, humour, tenderness, boredom."}, {"suit": "Seeing Differently", "number": 11, "title": "Swap the Stakes", "description": "Raise or lower the importance. Triviality or drama creates clarity."}, {"suit": "Seeing Differently", "number": 12, "title": "Move the Camera", "description": "Place the viewpoint somewhere unusual: above, below, behind."}, {"suit": "Seeing Differently", "number": 13, "title": "Shift the Audience", "description": "Rewrite for one person, everyone, then no one. Audience changes voice."}, {"suit": "Play & Experimentation", "number": 1, "title": "Write the Wrong Version", "description": "Say it badly or absurdly. The right version often sits beyond the wrong one."}, {"suit": "Play & Experimentation", "number": 2, "title": "Add a Ridiculous Rule", "description": "Every sentence must rhyme with something impossible. Play invites invention."}, {"suit": "Play & Experimentation", "number": 3, "title": "Break the Pattern", "description": "If you feel repetition, deliberately do the opposite."}, {"suit": "Play & Experimentation", "number": 4, "title": "Push a Metaphor Too Far", "description": "Extend it until silly or profound. Both help."}, {"suit": "Play & Experimentation", "number": 5, "title": "Erase Half the Words", "description": "Cut without thinking. Fragments hint at new forms."}, {"suit": "Play & Experimentation", "number": 6, "title": "Rebuild from the Debris", "description": "Assemble a new piece from fragments you cut."}, {"suit": "Play & Experimentation", "number": 7, "title": "Wrong Answers Only", "description": "Answer a serious question with nonsense. Truth sneaks in sideways."}, {"suit": "Play & Experimentation", "number": 8, "title": "Swap Roles with Your Idea", "description": "Let the concept speak to you. Ask what it wants or fears."}, {"suit": "Play & Experimentation", "number": 9, "title": "Introduce a Wild Card", "description": "Bring in an element that doesn\u2019t belong (a lighthouse, tuba, penguin)."}, {"suit": "Play & Experimentation", "number": 10, "title": "Repeat Until It Breaks", "description": "Rewrite the same sentence several times. When it collapses, a new one appears."}, {"suit": "Play & Experimentation", "number": 11, "title": "Start with the Ending", "description": "Invent an ending and work backwards like a mystery."}, {"suit": "Play & Experimentation", "number": 12, "title": "Mistranslate Yourself", "description": "Rewrite as if poorly translated. Changes reveal insight."}, {"suit": "Play & Experimentation", "number": 13, "title": "Treat It Like a Game", "description": "Invent \u2018rules\u2019. Games reduce pressure and invite risk."}, {"suit": "Mindset & Momentum", "number": 1, "title": "Lower the Bar", "description": "Set the goal comically small. Momentum grows from small wins."}, {"suit": "Mindset & Momentum", "number": 2, "title": "Start in the Middle", "description": "Skip beginnings. Begin with what feels easiest."}, {"suit": "Mindset & Momentum", "number": 3, "title": "Make a Tiny Promise", "description": "Commit to two minutes. If it expands, great."}, {"suit": "Mindset & Momentum", "number": 4, "title": "Name Today\u2019s Creative Weather", "description": "Identify internal conditions. Acceptance sets expectations."}, {"suit": "Mindset & Momentum", "number": 5, "title": "Separate Draft from Judgement", "description": "Don\u2019t assess quality until the end. Creation and critique differ."}, {"suit": "Mindset & Momentum", "number": 6, "title": "Give Future-You a Gift", "description": "Leave an easy, obvious next step for tomorrow."}, {"suit": "Mindset & Momentum", "number": 7, "title": "Reward the Start, Not the Finish", "description": "Celebrate showing up. Beginning matters more."}, {"suit": "Mindset & Momentum", "number": 8, "title": "Choose the Kind Voice", "description": "Assign your critic a gentler role. Kindness increases output."}, {"suit": "Mindset & Momentum", "number": 9, "title": "Stop Before You\u2019re Done", "description": "End while you know what comes next. Re-entry becomes easy."}, {"suit": "Mindset & Momentum", "number": 10, "title": "Make Failure Very Small", "description": "Define the tiniest possible unsuccessful outcome. Shrink fear."}, {"suit": "Mindset & Momentum", "number": 11, "title": "Change the Environment", "description": "Shift location, posture, lighting. Tiny changes help."}, {"suit": "Mindset & Momentum", "number": 12, "title": "Start with Noticing", "description": "Spend a minute observing. Attention is renewable."}, {"suit": "Mindset & Momentum", "number": 13, "title": "Begin Anyway", "description": "You don\u2019t need readiness. Beginning generates it."}];
+
+const SUIT_COLORS = {
+  "Methods & Mechanisms": "#7aa2ff",
+  "Seeing Differently": "#ff9f7a",
+  "Play & Experimentation": "#7affc0",
+  "Mindset & Momentum": "#d79aff"
+};
+
+const cardEl = document.getElementById('card');
+const suitEl = document.getElementById('suit');
+const numberEl = document.getElementById('number');
+const titleEl = document.getElementById('title');
+const descEl = document.getElementById('desc');
+const counterEl = document.getElementById('counter');
+const drawBtn = document.getElementById('draw');
+
+let lastIndex = -1;
+
+function drawCard() {
+  let idx;
+  do {
+    idx = Math.floor(Math.random() * CARDS.length);
+  } while (CARDS.length > 1 && idx === lastIndex);
+  lastIndex = idx;
+  const c = CARDS[idx];
+
+  cardEl.classList.add('dealing');
+  setTimeout(() => cardEl.classList.remove('dealing'), 150);
+
+  suitEl.textContent = c.suit;
+  suitEl.style.color = SUIT_COLORS[c.suit] || '#888';
+  const RANKS = {1: 'A', 11: 'J', 12: 'Q', 13: 'K'};
+  numberEl.textContent = RANKS[c.number] || c.number;
+  titleEl.textContent = c.title;
+  descEl.textContent = c.description;
+  counterEl.textContent = `${CARDS.length} cards in deck`;
+}
+
+drawBtn.addEventListener('click', drawCard);
+counterEl.textContent = `${CARDS.length} cards in deck`;
+</script>
+</body>
+</html>
